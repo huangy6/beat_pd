@@ -1,0 +1,4 @@
+data/*/training_data
+data/*/*.tar.bz2
+data/test_set/*
+
