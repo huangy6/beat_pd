@@ -1,3 +1,7 @@
+.DS_Store
+.snakemake/
+.ipynb_checkpoints/
+__pycache__/
 data/*/training_data
 data/*/*.tar.bz2
 data/test_set/*

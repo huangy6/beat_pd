@@ -1,0 +1,18 @@
+name: pd-acc-env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python>=3.7
+  - numpy
+  - pandas
+  - requests
+  - h5py
+  - snakemake
+  - scipy
+  - scikit-learn
+  - altair
+  - jupyter
+  - nb_conda
+  - pip
+
