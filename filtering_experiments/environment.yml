@@ -11,6 +11,7 @@ dependencies:
   - snakemake
   - scipy
   - scikit-learn
+  - tsfresh
   - altair
   - jupyter
   - nb_conda
