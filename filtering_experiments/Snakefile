@@ -1,0 +1,35 @@
+from os.path import join
+
+# Files
+DATA_DIR = "data"
+RAW_DIR = join(DATA_DIR, "raw")
+PROCESSED_DIR = join(DATA_DIR, "processed")
+
+
+
+# Rules
+rule all:
+    input:
+        join(RAW_DIR, "UCI_HAPT", "RawData", "acc_exp01_user01.txt")
+
+rule unzip:
+    input:
+        join(RAW_DIR, "UCI_HAPT.zip")
+    params:
+        out_dir=join(RAW_DIR, "UCI_HAPT")
+    output:
+        join(RAW_DIR, "UCI_HAPT", "RawData", "acc_exp01_user01.txt")
+    shell:
+        """
+        unzip {input} -d {params.out_dir}
+        """
+
+rule download:
+    params:
+        file_url="http://archive.ics.uci.edu/ml/machine-learning-databases/00341/HAPT%20Data%20Set.zip"
+    output:
+        join(RAW_DIR, "UCI_HAPT.zip")
+    shell:
+        """
+        curl -L -o {output} {params.file_url}
+        """
