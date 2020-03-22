@@ -45,15 +45,16 @@ def signals_to_features(arr):
     z = R_bar[triu_i]
     log_z = np.log(z)
 
+    # feature engineering: more of an art than a science?
     peaks, _ = signal.find_peaks(log_z, distance=4000)
     peak_midpoints = (peaks[1:] + peaks[:-1]) / 2
     
     x = np.floor(np.sort(np.concatenate((peaks, peak_midpoints)))).astype(int)
     y = log_z[x]
-    arr = np.stack((x, y), axis=-1)
-    arr_truncated = arr[0:1500] # feature engineering: more of an art than a science?
+    peaks_arr = np.stack((x, y), axis=-1)
+    peaks_arr_truncated = peaks_arr[0:1500]
 
-    features_df = pd.DataFrame(data=arr_truncated).rename(columns={0: 'freq', 1: 'val'})
+    features_df = pd.DataFrame(data=peaks_arr_truncated).rename(columns={ 0: 'freq', 1: 'val' })
     return features_df
 
 
