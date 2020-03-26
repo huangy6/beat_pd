@@ -12,7 +12,7 @@ def apply3d(arr, func):
     filtered_arr_dim_2 = func(arr.T[2])
     return np.stack((filtered_arr_dim_0, filtered_arr_dim_1, filtered_arr_dim_2), axis=-1)
 
-def signals_to_features(arr):
+def filter_signals(arr):
     # ### Filtering
     # According to the procedure described by Reyes-Ortiz et al:
     # - median filter (to remove noise)
@@ -27,6 +27,11 @@ def signals_to_features(arr):
     medfilt_arr = apply3d(arr, lambda x: signal.medfilt(x))
     butter1_arr = apply3d(medfilt_arr, lambda x: signal.lfilter(b=butter1[0], a=butter1[1], x=x, axis=0))
     butter2_arr = apply3d(butter1_arr, lambda x: signal.lfilter(b=butter2[0], a=butter2[1], x=x, axis=0))
+    return butter2_arr
+
+
+def signals_to_features(arr):
+    butter2_arr = filter_signals(arr)
 
     # ### FFT
     # According to the procedure described by Kobayashi et al:
