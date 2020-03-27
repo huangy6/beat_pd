@@ -18,18 +18,20 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=10, starts=None, reset_
     # TODO: Address multiple devices in real-pd smartwatch measurements
     return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)] if reset_time else samples
 
-def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z']):
+def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False):
     df = pd.read_csv(fp, usecols=[t_colname, *xyz_colnames])
-    df = df.rename(columns=dict(zip([t_colname, *xyz_colnames], ['t', 'x', 'y', 'z']))) 
+    df = df.rename(columns=dict(zip([t_colname, *xyz_colnames], ['t', 'x', 'y', 'z'])))
     df = df.set_index('t')
+    if use_time_index:
+        df = df.set_index(pd.to_timedelta(df.index, unit="s"))
     return df
 
 def write_seq(seq: pd.DataFrame, fp: str):
-    seq.to_csv(fp)    
+    seq.to_csv(fp)
 
 def take_training_samples(n_samples=10, samp_len=10):
-    """Given a list of directories containing raw sensor files, 
-    Take n_samples training samples of samp_len seconds each. 
+    """Given a list of directories containing raw sensor files,
+    Take n_samples training samples of samp_len seconds each.
     Place output in training_samples/ directory level with raw files"""
     for raw_dir, t_colname, xyz_colnames in tqdm(zip(RAW_SEQ_DIRS, T_COLNAMES, XYZ_COLNAMES)):
         for fp in tqdm(glob.glob(raw_dir + '/*.csv'), leave=False):
@@ -42,15 +44,13 @@ def take_training_samples(n_samples=10, samp_len=10):
             for i, sample in enumerate(samples):
                 sample.to_csv(f'{out_fd}/{i}.csv')
 
-# Training: 
+# Training:
 # For each file in training set
 #  Randomly take k number of m second samples
-#  For each sample 
-#   For each channel 
+#  For each sample
+#   For each channel
 #    Fit ARIMA(p, d, q) model
-#    Take AR and MA parameter vectors 
+#    Take AR and MA parameter vectors
 #   Concatenate channel-specific parameter vectors to form feature vector for sample
-# Train classifier over feature vectors  
-# Save trained classifier 
-
-
+# Train classifier over feature vectors
+# Save trained classifier
