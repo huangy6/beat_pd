@@ -24,7 +24,7 @@ def extract_tsf_features(input_file, window_offset=5, window_size=10, n_jobs=1):
 
         window_df = df.loc[(df["Timestamp"] >= window_start) & (df["Timestamp"] < window_stop)]
         window_df = window_df.melt(id_vars=["Timestamp"], value_vars=["X", "Y", "Z"], var_name="dim")
-        window_tsf_df = tsf.feature_extraction.extraction.extract_features(window_df, column_id="dim", column_sort="Timestamp", n_jobs=n_jobs)
+        window_tsf_df = tsf.feature_extraction.extraction.extract_features(window_df, column_id="dim", column_sort="Timestamp", n_jobs=n_jobs, disable_progressbar=True)
         window_tsf_df["window_start"] = window_start
         window_tsf_df["window_stop"] = window_stop
         window_tsf_df["window_count"] = df.shape[0]
