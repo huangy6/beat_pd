@@ -9,7 +9,7 @@ extract tsfresh features for each window of `window_size` seconds.
 Move the window forward by `window_offset` 
 until the end of the measurement file is reached.
 """
-def extract_tsf_features(input_file, window_offset=5, window_size=10, n_jobs=4):
+def extract_tsf_features(input_file, window_offset=5, window_size=10, n_jobs=1):
     df = pd.read_csv(input_file)
     df["Timestamp"] = df["Timestamp"].astype(float)
 
