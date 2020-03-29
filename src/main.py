@@ -18,12 +18,35 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=10, starts=None, reset_
     # TODO: Address multiple devices in real-pd smartwatch measurements
     return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)] if reset_time else samples
 
-def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False):
+def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
+    """ reads a file and returns the associated data
+
+    Parameters
+    ----------
+    fp : str
+        Description of parameter `fp`.
+    t_colname : type
+        Description of parameter `t_colname`.
+    xyz_colnames : type
+        Description of parameter `xyz_colnames`.
+    use_time_index : bool
+        Description of parameter `use_time_index`.
+    resample : pd.Timedelta
+        how much to resample by. Uses mean resampling
+
+    Returns
+    -------
+    read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False,
+        Description of returned object.
+
+    """
     df = pd.read_csv(fp, usecols=[t_colname, *xyz_colnames])
     df = df.rename(columns=dict(zip([t_colname, *xyz_colnames], ['t', 'x', 'y', 'z'])))
     df = df.set_index('t')
     if use_time_index:
         df = df.set_index(pd.to_timedelta(df.index, unit="s"))
+        if resample is not None:
+            df = df.resample(resample)
     return df
 
 def write_seq(seq: pd.DataFrame, fp: str):

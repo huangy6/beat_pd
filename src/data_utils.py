@@ -25,3 +25,13 @@ def get_mongo_client():
     else:
         mongo_uri = config["mongo_uri"]
         return pymongo.MongoClient(mongo_uri)
+<<<<<<< HEAD
+=======
+
+def fft_bin(data, bin, frequency):
+    fft_data = np.abs(
+                        np.fft.fft(
+                            data,
+                            axis=0))
+    fft_freq = np.fft.fftfreq(data.shape[0], d=1/frequency)
+>>>>>>> master
