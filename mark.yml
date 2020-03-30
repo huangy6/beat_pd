@@ -1,4 +1,4 @@
-name: pd-acc-env
+name: beat-pd-mark-env
 channels:
   - conda-forge
   - bioconda
