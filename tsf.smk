@@ -9,7 +9,7 @@ MARK_PROJ_DIR = join(os.sep, "home", "mk596", "research", "beat_pd") if is_o2 el
 
 SRC_DIR = "src"
 DATA_DIR = join(YIDI_PROJ_DIR, "data", "cis-pd", "training_data")
-TSF_DIR = join(MARK_PROJ_DIR, "data", "cis-pd", "training_data_tsf_sample")
+TSF_DIR = join(MARK_PROJ_DIR, "data", "cis-pd", "training_data_tsf")
 
 MEASUREMENT_FILES = [ f for f in os.listdir(DATA_DIR) if f.endswith(".csv") ]
 TSF_FILES = [ (f[:-4] + ".tsf.csv") for f in MEASUREMENT_FILES ]
