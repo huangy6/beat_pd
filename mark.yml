@@ -13,7 +13,12 @@ dependencies:
   - scikit-learn
   - tsfresh
   - altair
+  - matplotlib
+  - seaborn
+  - statsmodels
   - jupyter
   - nb_conda
   - pip
+  - pip:
+    - UpSetPlot==0.4.0
 
