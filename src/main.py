@@ -46,7 +46,7 @@ def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_inde
     if use_time_index:
         df = df.set_index(pd.to_timedelta(df.index, unit="s"))
         if resample is not None:
-            df = df.resample()
+            df = df.resample(resample).mean()
     return df
 
 def write_seq(seq: pd.DataFrame, fp: str):
