@@ -16,9 +16,11 @@ dependencies:
   - matplotlib
   - seaborn
   - statsmodels
+  - tensorflow
+  - ipywidgets
   - jupyter
   - nb_conda
   - pip
   - pip:
-    - UpSetPlot==0.4.0
+    - pigeon-jupyter
 
