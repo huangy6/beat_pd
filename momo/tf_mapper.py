@@ -6,8 +6,11 @@ from functools import lru_cache
 @lru_cache(1)
 def get_indices():
     labels =  get_labels()
-    train_mid, test_mid = train_test_split(labels.measurement_id.unique(), random_state=1)
-    train_mid, valid_mid = train_test_split(train_mid, random_state=1)
+    subjects = labels.groupby("measurement_id").first()["subject_id"]
+    train_mid, test_mid = train_test_split(labels.measurement_id.unique(), random_state=1, stratify=subjects)
+    subjects = labels[labels.measurement_id.isin(train_mid)].groupby("measurement_id").first()["subject_id"]
+
+    train_mid, valid_mid = train_test_split(train_mid, random_state=1, stratify=subjects)
     all_mid = get_all_mid()
     train_indices  = [all_mid.index(train_m) for train_m in train_mid]
     valid_indices  = [all_mid.index(train_m) for train_m in valid_mid]
