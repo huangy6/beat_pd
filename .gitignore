@@ -6,6 +6,7 @@ data/*/training_data
 data/*/training_data_tsf
 data/*/*.tar.bz2
 data/test_set/*
+extracted_features/
 
 __pycache__
 .ipynb_checkpoints/
@@ -13,3 +14,6 @@ __pycache__/
 src/__pycache__/
 *.h5
 config.json
+
+notebook_*.out
+dask-worker-space
