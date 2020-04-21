@@ -18,13 +18,15 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=10, starts=None, reset_
     # TODO: Address multiple devices in real-pd smartwatch measurements
     return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)] if reset_time else samples
 
-def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
+def read_seq(fp: str, device_id=None, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
     """ reads a file and returns the associated data
 
     Parameters
     ----------
     fp : str
         Description of parameter `fp`.
+    device_id: str
+        Valid only for smartwatch dataset, if set to None then default to first
     t_colname : type
         Description of parameter `t_colname`.
     xyz_colnames : type
@@ -38,9 +40,14 @@ def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_inde
     -------
     read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False,
         Description of returned object.
-
     """
-    df = pd.read_csv(fp, usecols=[t_colname, *xyz_colnames])
+
+    df = pd.read_csv(fp)
+    if "smartwatch_accelerometer" in fp or "smartwatch_gyroscope" in fp:
+        if device_id is None:
+            device_id = df.device_id.iloc[0]
+        df = df[df.device_id == device_id]
+    df = df[[t_colname, *xyz_colnames]]
     df = df.rename(columns=dict(zip([t_colname, *xyz_colnames], ['t', 'x', 'y', 'z'])))
     df = df.set_index('t')
     if use_time_index:
@@ -48,6 +55,59 @@ def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_inde
         if resample is not None:
             df = df.resample(resample).mean()
     return df
+
+def get_all_cispd_train_data(m_id):
+    return main.read_seq(
+        f"/home/ms994/beat_pd/data/cis-pd/training_data/{m_id}.csv",
+        t_colname="Timestamp",
+        xyz_colnames=["X", "Y", "Z"],
+        use_time_index=True,
+        resample=pd.Timedelta(seconds=1/25)
+    )
+def get_cispd_eval_data(m_id):
+    return main.read_seq(
+        f"{m_id}",
+        t_colname="Timestamp",
+        xyz_colnames=["X", "Y", "Z"],
+        use_time_index=True,
+        resample=pd.Timedelta(seconds=1/25)
+    )
+def get_all_real_pd_test_data(m_id, device_id):
+    allData = []
+    subdirs = ["smartwatch_accelerometer", "smartwatch_gyroscope", "smartphone_accelerometer"]
+    for subdir in subdirs:
+        if os.path.isfile(f"/home/ms994/beat_pd/test_set/real-pd/testing_data/{subdir}/{m_id}.csv"):
+            allData.append(main.read_seq(
+            f"/home/ms994/beat_pd/test_set/real-pd/testing_data/{subdir}/{m_id}.csv",
+            device_id=device_id,
+            use_time_index=True,
+            resample=pd.Timedelta(seconds=1/25))
+        else:
+            allData.append(pd.DataFrame(index=pd.timedelta_range(start=pd.Timedelta(seconds=0), freq=pd.Timedelta(seconds=1/25), end = pd.Timedelta(minutes=20)), columns=[1,2,3])) #this is basically null
+    return allData
+def get_all_real_pd_train_data(m_id, device_id):
+    allData = []
+    subdirs = ["smartwatch_accelerometer", "smartwatch_gyroscope", "smartphone_accelerometer"]
+    for subdir in subdirs:
+        if os.path.isfile(f"/home/ms994/beat_pd/data/real-pd/training_data/{subdir}/{m_id}.csv"):
+            allData.append(main.read_seq(
+            f"/home/ms994/beat_pd/data/real-pd/training_data/{subdir}/{m_id}.csv",
+            device_id=device_id,
+            use_time_index=True,
+            resample=pd.Timedelta(seconds=1/25))
+        else:
+            allData.append(pd.DataFrame(index=pd.timedelta_range(start=pd.Timedelta(seconds=0), freq=pd.Timedelta(seconds=1/25), end = pd.Timedelta(minutes=20)), columns=[1,2,3])) #this is basically null
+    return allData
+def read_mid_and_split_data_into_windows(params, get_data=None, max_window=pd.Timedelta(seconds=60), overlap=pd.Timedelta(seconds=10)):
+        data = get_data(*params)
+
+        all_samples = []
+        currentIndex = pd.Timedelta(seconds=0)
+        while (currentIndex + max_window < data.index.max()):
+            all_samples.append(data.loc[currentIndex:currentIndex+max_window].fillna(method="ffill").fillna(method="bfill").values) #some values are NaNs in the data!
+            currentIndex += overlap
+        return all_samples
+
 
 def write_seq(seq: pd.DataFrame, fp: str):
     seq.to_csv(fp)
