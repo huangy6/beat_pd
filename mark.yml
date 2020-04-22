@@ -19,6 +19,7 @@ dependencies:
   - tensorflow
   - ipywidgets
   - jupyter
+  - jupyterlab
   - nb_conda
   - pip
   - pip:
