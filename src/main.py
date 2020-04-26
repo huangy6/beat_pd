@@ -1,7 +1,11 @@
 import pandas as pd
 import os
 import glob
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
+from sklearn import metrics
 from tqdm.auto import tqdm
 from pathlib import Path
 from numpy import random
@@ -127,13 +131,18 @@ def take_training_samples(n_samples=10, samp_len=10):
             for i, sample in enumerate(samples):
                 sample.to_csv(f'{out_fd}/{i}.csv')
 
-# Training:
-# For each file in training set
-#  Randomly take k number of m second samples
-#  For each sample
-#   For each channel
-#    Fit ARIMA(p, d, q) model
-#    Take AR and MA parameter vectors
-#   Concatenate channel-specific parameter vectors to form feature vector for sample
-# Train classifier over feature vectors
-# Save trained classifier
+def plot_performance(y_true, y_pred, title_metric=metrics.mean_squared_error):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+
+    sns.violinplot(data=pd.DataFrame({'actual': y_true, 'predicted': y_pred}), x='actual', y='predicted', ax=ax1)
+    
+    # confusion matrix
+    label_vals = np.sort(y_true.unique())
+    cm = metrics.confusion_matrix(y_true, np.round(y_pred), labels=label_vals)
+    sns.heatmap(cm, xticklabels=label_vals, yticklabels=label_vals, ax=ax2)
+    ax2.set_xlabel('predicted')
+    ax2.set_ylabel('actual')
+    ax2.invert_yaxis()
+    
+    score = title_metric(y_true, y_pred)
+    _ = fig.suptitle(f'score (default mse): {score}')
