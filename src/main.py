@@ -81,7 +81,7 @@ def get_all_real_pd_test_data(m_id, device_id):
             f"/home/ms994/beat_pd/test_set/real-pd/testing_data/{subdir}/{m_id}.csv",
             device_id=device_id,
             use_time_index=True,
-            resample=pd.Timedelta(seconds=1/25))
+            resample=pd.Timedelta(seconds=1/25)))
         else:
             allData.append(pd.DataFrame(index=pd.timedelta_range(start=pd.Timedelta(seconds=0), freq=pd.Timedelta(seconds=1/25), end = pd.Timedelta(minutes=20)), columns=[1,2,3])) #this is basically null
     return allData
@@ -94,7 +94,7 @@ def get_all_real_pd_train_data(m_id, device_id):
             f"/home/ms994/beat_pd/data/real-pd/training_data/{subdir}/{m_id}.csv",
             device_id=device_id,
             use_time_index=True,
-            resample=pd.Timedelta(seconds=1/25))
+            resample=pd.Timedelta(seconds=1/25)))
         else:
             allData.append(pd.DataFrame(index=pd.timedelta_range(start=pd.Timedelta(seconds=0), freq=pd.Timedelta(seconds=1/25), end = pd.Timedelta(minutes=20)), columns=[1,2,3])) #this is basically null
     return allData
