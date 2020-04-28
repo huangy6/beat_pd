@@ -15,14 +15,24 @@ T_COLNAMES = ['Timestamp', 't'] #, 't', 't']
 XYZ_COLNAMES = [['X', 'Y', 'Z'], ['x', 'y', 'z']] #, ['x', 'y', 'z'], ['x', 'y', 'z']]
 
 
-def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=10, starts=None, reset_time=True):
-    starts = starts if starts else random.uniform(low=0, high=seq.index.max()-samp_len, size=n_samples)
-    samples = [seq[start:start+samp_len] for start in starts]
+def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10), starts=None, reset_time=True):
+    if starts is None:
+        starts = [pd.Timedelta(seconds=t) for t in random.uniform(low=0, high=float(seq.index.max()-samp_len), size=n_samples)]
+    idx = pd.IndexSlice
+    if type(seq.index) == pd.MultiIndex:
+        samples = [seq.xs(idx[start:start+samp_len], level='t', drop_level=False) for start in starts]
+    else:
+        samples = [seq.loc[start:start+samp_len] for start in starts]
     # Some samples will be empty/incomplete due to lapses in measurements
     # TODO: Address multiple devices in real-pd smartwatch measurements
-    return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)] if reset_time else samples
+    if not reset_time:
+        return samples
+    if type(seq.index) == pd.MultiIndex:
+        return [samp.set_index(samp.index.set_levels(samp.index.levels[1] - start, level='t')) for samp,start in zip(samples, starts)]
+    else:
+        return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)]
 
-def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
+def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], devid_colnames=[], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
     """ reads a file and returns the associated data
 
     Parameters
@@ -44,13 +54,17 @@ def read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_inde
         Description of returned object.
 
     """
-    df = pd.read_csv(fp, usecols=[t_colname, *xyz_colnames])
+    df = pd.read_csv(fp, usecols=[t_colname, *xyz_colnames, *devid_colnames])
     df = df.rename(columns=dict(zip([t_colname, *xyz_colnames], ['t', 'x', 'y', 'z'])))
-    df = df.set_index('t')
-    if use_time_index:
-        df = df.set_index(pd.to_timedelta(df.index, unit="s"))
-        if resample is not None:
-            df = df.resample(resample).mean()
+
+    time_index = pd.to_timedelta(df['t'], unit="s") if use_time_index else df['t']
+    devid_index = [df[c] for c in devid_colnames]
+    # Drop explicitly to avoid funny business
+    df = df.set_index([*devid_index, time_index,], drop=False).drop(columns=['t', *devid_colnames])
+    if use_time_index and resample is not None:
+        if devid_colnames:
+            df = df.groupby(devid_colnames)
+        df = df.resample(resample, level='t').mean()
     return df
 
 def write_seq(seq: pd.DataFrame, fp: str):
