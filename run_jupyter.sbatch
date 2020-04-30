@@ -21,7 +21,7 @@ Job id: $SLURM_JOB_ID
 
 To connect to this instance run the following command locally and open a tunnel:
 
-  ssh -L $port:localhost:$port $USER@$(hostname)
+  ssh -L $port:localhost:$port -L 8787:localhost:8787 $USER@$(hostname)
 
 Instructions to connect to the notebook should appear shortly.
 
