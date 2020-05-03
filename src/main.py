@@ -15,37 +15,25 @@ T_COLNAMES = ['Timestamp', 't'] #, 't', 't']
 XYZ_COLNAMES = [['X', 'Y', 'Z'], ['x', 'y', 'z']] #, ['x', 'y', 'z'], ['x', 'y', 'z']]
 
 
-def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=10, starts=None, reset_time=True):
-    starts = starts if starts else random.uniform(low=0, high=seq.index.max()-samp_len, size=n_samples)
-    samples = [seq[start:start+samp_len] for start in starts]
+def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10), starts=None, reset_time=True):
+    if starts is None:
+        starts = [pd.Timedelta(seconds=t) for t in random.uniform(low=0, high=float(seq.index.max()-samp_len), size=n_samples)]
+    idx = pd.IndexSlice
+    if type(seq.index) == pd.MultiIndex:
+        samples = [seq.xs(idx[start:start+samp_len], level='t', drop_level=False) for start in starts]
+    else:
+        samples = [seq.loc[start:start+samp_len] for start in starts]
     # Some samples will be empty/incomplete due to lapses in measurements
     # TODO: Address multiple devices in real-pd smartwatch measurements
     return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)] if reset_time else samples
 
-def read_seq(fp: str, device_id=None, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
-    """ reads a file and returns the associated data
-
-    Parameters
-    ----------
-    fp : str
-        Description of parameter `fp`.
-    device_id: str
-        Valid only for smartwatch dataset, if set to None then default to first
-    t_colname : type
-        Description of parameter `t_colname`.
-    xyz_colnames : type
-        Description of parameter `xyz_colnames`.
-    use_time_index : bool
-        Description of parameter `use_time_index`.
-    resample : pd.Timedelta
-        how much to resample by. Uses mean resampling
-
-    Returns
-    -------
-    read_seq(fp: str, t_colname='t', xyz_colnames=['x', 'y', 'z'], use_time_index=False,
-        Description of returned object.
-    """
-
+def read_seq(fp: str, device_id=None, t_colname='t', devid_colnames=[], xyz_colnames=['x', 'y', 'z'], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
+    if not reset_time:
+        return samples
+    if type(seq.index) == pd.MultiIndex:
+        return [samp.set_index(samp.index.set_levels(samp.index.levels[1] - start, level='t')) for samp,start in zip(samples, starts)]
+    else:
+        return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)]
     df = pd.read_csv(fp)
     if "smartwatch_accelerometer" in fp or "smartwatch_gyroscope" in fp:
         if device_id is None:
@@ -112,7 +100,6 @@ def read_mid_and_split_data_into_windows(params, get_data=None, max_window=pd.Ti
             currentIndex += overlap
         return all_samples
 
-
 def write_seq(seq: pd.DataFrame, fp: str):
     seq.to_csv(fp)
 
@@ -135,7 +122,7 @@ def plot_performance(y_true, y_pred, title_metric=metrics.mean_squared_error):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
     sns.violinplot(data=pd.DataFrame({'actual': y_true, 'predicted': y_pred}), x='actual', y='predicted', ax=ax1)
-    
+
     # confusion matrix
     label_vals = np.sort(y_true.unique())
     cm = metrics.confusion_matrix(y_true, np.round(y_pred), labels=label_vals)
@@ -143,6 +130,6 @@ def plot_performance(y_true, y_pred, title_metric=metrics.mean_squared_error):
     ax2.set_xlabel('predicted')
     ax2.set_ylabel('actual')
     ax2.invert_yaxis()
-    
+
     score = title_metric(y_true, y_pred)
     _ = fig.suptitle(f'score (default mse): {score}')

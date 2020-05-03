@@ -17,3 +17,4 @@ config.json
 
 notebook_*.out
 dask-worker-space
+slurm-*.out
