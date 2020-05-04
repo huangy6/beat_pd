@@ -28,12 +28,6 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10
     return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)] if reset_time else samples
 
 def read_seq(fp: str, device_id=None, t_colname='t', devid_colnames=[], xyz_colnames=['x', 'y', 'z'], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
-    if not reset_time:
-        return samples
-    if type(seq.index) == pd.MultiIndex:
-        return [samp.set_index(samp.index.set_levels(samp.index.levels[1] - start, level='t')) for samp,start in zip(samples, starts)]
-    else:
-        return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)]
     df = pd.read_csv(fp)
     if "smartwatch_accelerometer" in fp or "smartwatch_gyroscope" in fp:
         if device_id is None:
