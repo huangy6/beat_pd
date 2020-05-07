@@ -78,10 +78,10 @@ def plot_performance(y_true, y_pred, title_metric=metrics.mean_squared_error):
     
     # confusion matrix
     label_vals = np.sort(y_true.unique())
-    cm = metrics.confusion_matrix(y_true, np.round(y_pred), labels=label_vals)
+    cm = metrics.confusion_matrix(np.round(y_pred), y_true, labels=label_vals)
     sns.heatmap(cm, xticklabels=label_vals, yticklabels=label_vals, ax=ax2)
-    ax2.set_xlabel('predicted')
-    ax2.set_ylabel('actual')
+    ax2.set_ylabel('predicted')
+    ax2.set_xlabel('actual')
     ax2.invert_yaxis()
     
     score = title_metric(y_true, y_pred)
