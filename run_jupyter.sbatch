@@ -4,7 +4,7 @@
 #SBATCH --job-name=jupyter
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=4GB
+#SBATCH --mem=12GB
 #SBATCH -t 48:00:00
 #SBATCH -o notebook_%j.out
 
