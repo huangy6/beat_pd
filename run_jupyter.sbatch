@@ -3,8 +3,8 @@
 #SBATCH --partition=priority
 #SBATCH --job-name=jupyter
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=2
-#SBATCH --mem=12GB
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=16GB
 #SBATCH -t 48:00:00
 #SBATCH -o notebook_%j.out
 
