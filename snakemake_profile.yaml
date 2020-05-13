@@ -1,3 +1,0 @@
-cluster: 'sbatch -p short -n 1 -t 0-02:00 --mem=8000'
-jobs: 100
-latency-wait: 60
