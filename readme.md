@@ -24,6 +24,8 @@ The first three steps can be resource intensive. Cached results from the hyperpa
 * Anaconda - env.yml contains an anaconda environment specification 
 * A SLURM cluster - fitted models can be evaluated without a cluster, but feature extraction and fitting will be greatly accelerated using a cluster, and the hyperparameter search is infeasible on a single computer. 
   * Easily switch between local and distributed execution by uncommenting either `SLURMCluster` or `LocalCluster` in the initialization cells at the top of the notebooks
+  * If running on a SLURM cluster, the arguments to `SLURMCluster()` and `cluster.adapt()` may need tuning. More information on the dask scheduler [here](https://jobqueue.dask.org/en/latest/howitworks.html) and available parameters [here](https://jobqueue.dask.org/en/latest/generated/dask_jobqueue.SLURMCluster.html).
+  
 
 ## Pipeline in detail
 The test set predictions can be regenerated using our pre-trained models following the directions in the [last section](#predict-test-data) below and downloading the extracted feature representations from [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0).
