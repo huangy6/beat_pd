@@ -9,6 +9,7 @@ from sklearn import metrics
 from tqdm.auto import tqdm
 from pathlib import Path
 from numpy import random
+from distributed import LocalCluster, Client
 
 RAW_SEQ_DIRS = ['../data/cis-pd/training_data', '../data/real-pd/training_data/smartphone_accelerometer'] #, '../data/real-pd/training_data/smartwatch_accelerometer', '../data/real-pd/training_data/smartwatch_gyroscope']
 T_COLNAMES = ['Timestamp', 't'] #, 't', 't']
@@ -100,3 +101,12 @@ def plot_performance(y_true, y_pred, title_metric=metrics.mean_squared_error):
     
     score = title_metric(y_true, y_pred)
     _ = fig.suptitle(f'score (default mse): {score}')
+
+def choose_dask_cluster(cluster_type=LocalCluster, cluster_kwargs={}, adapt_kwargs={'minimum': 1, 'maximum': 3}):
+    """Initialize a new dask Cluster and connect to it with a Client. 
+    """
+    cluster = cluster_type(**cluster_kwargs)
+    cluster.adapt(**adapt_kwargs)
+    client = Client(cluster)
+
+    return client, cluster
