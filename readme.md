@@ -4,7 +4,7 @@ https://www.synapse.org/#!Synapse:syn20825169
 Yidi Huang, Mark Keller, Mohammed Saqib
 
 This repository contains our code for the community phase of the BEAT-PD challenge. 
-The [*final_sub*](./tree/final_sub) branch of this repository contains our submission for the competition phase of the BEAT-PD challenge. 
+The [*final_sub*](https://github.com/huangy6/beat_pd/tree/final_sub/) branch of this repository contains our submission for the competition phase of the BEAT-PD challenge. 
 
 ## Pipeline overview
 
@@ -37,10 +37,7 @@ snakemake --snakefile featurize.smk
 
 ## Run on a cluster
 
-* Fitted models can be evaluated without a cluster, but feature extraction and fitting will be greatly accelerated using a cluster, and the hyperparameter search is infeasible on a single computer. 
-
-Note: these instructions are for SLURM.
-If using a different job submission manager, update the `cluster-profile.yml` file.
+Fitted models can be evaluated without a cluster, but feature extraction and fitting will be greatly accelerated using a cluster, and the hyperparameter search is infeasible on a single computer. 
 
 Copy the cluster profile to the `~/.config/` directory.
 
@@ -54,6 +51,9 @@ Run the pipeline with the cluster profile.
 ```sh
 snakemake --profile beat-pd
 ```
+
+Note: these instructions are for SLURM.
+If using a different job submission manager, update the `cluster-profile.yml` file.
 
 ## Pipeline in detail
 The test set predictions can be regenerated using our pre-trained models following the directions in the [last section](#predict-test-data) below and downloading the extracted feature representations from [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0).
