@@ -1,9 +1,0 @@
-name: entropy
-channels:
-dependencies:
-        - numpy
-        - scipy
-        - scikit-learn
-        - numba
-        - pip:
-                - "--editable=git+https://github.com/raphaelvallat/entropy.git#egg=entropy-master"

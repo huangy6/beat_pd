@@ -3,7 +3,8 @@ https://www.synapse.org/#!Synapse:syn20825169
 
 Yidi Huang, Mark Keller, Mohammed Saqib
 
-This repository contains our submission for the BEAT-PD challenge. Our pipeline is presented as a set of two Jupyter notebooks: `feature extraction.ipynb` and `personalized.ipynb`, respectively handling feature extraction and model fitting/evaluation. The *final_sub* branch (default) contains a cleaned up copy of our code, consisting of the minimum necessary files to reproduce our final pipeline. Other approaches we tried can be found in the other branches. 
+This repository contains our code for the community phase of the BEAT-PD challenge. 
+The [*final_sub*](./tree/final_sub) branch of this repository contains our submission for the competition phase of the BEAT-PD challenge. 
 
 ## Pipeline overview
 
@@ -18,14 +19,41 @@ This repository contains our submission for the BEAT-PD challenge. Our pipeline 
 
 The first three steps can be resource intensive. Cached results from the hyperparameter search and model fitting are available in this repository, and extracted feature representations are available for download [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0). 
 
-## Prerequisites
+## Setup
 
-* Python3.6+ 
-* Anaconda - env.yml contains an anaconda environment specification 
-* A SLURM cluster - fitted models can be evaluated without a cluster, but feature extraction and fitting will be greatly accelerated using a cluster, and the hyperparameter search is infeasible on a single computer. 
-  * Easily switch between local and distributed execution by uncommenting either `SLURMCluster` or `LocalCluster` in the initialization cells at the top of the notebooks
-  * If running on a SLURM cluster, the arguments to `SLURMCluster()` and `cluster.adapt()` may need tuning. More information on the dask scheduler [here](https://jobqueue.dask.org/en/latest/howitworks.html) and available parameters [here](https://jobqueue.dask.org/en/latest/generated/dask_jobqueue.SLURMCluster.html).
-  
+Create and activate the [conda](https://docs.conda.io/en/latest/) environment.
+
+```sh
+conda env create -f environment.yml
+conda activate beat-pd-team-dbmi
+```
+
+
+## Run locally
+
+```sh
+snakemake --snakefile featurize.smk
+```
+
+## Run on a cluster
+
+* Fitted models can be evaluated without a cluster, but feature extraction and fitting will be greatly accelerated using a cluster, and the hyperparameter search is infeasible on a single computer. 
+
+Note: these instructions are for SLURM.
+If using a different job submission manager, update the `cluster-profile.yml` file.
+
+Copy the cluster profile to the `~/.config/` directory.
+
+```sh
+mkdir -p ~/.config/snakemake/beat-pd
+cp ./cluster-profile.yml ~/.config/snakemake/beat-pd/config.yml
+```
+
+Run the pipeline with the cluster profile.
+
+```sh
+snakemake --profile beat-pd
+```
 
 ## Pipeline in detail
 The test set predictions can be regenerated using our pre-trained models following the directions in the [last section](#predict-test-data) below and downloading the extracted feature representations from [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0).
