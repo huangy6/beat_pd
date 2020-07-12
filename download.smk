@@ -1,0 +1,60 @@
+from os.path import join
+
+# Directory / file constants
+# Intended to be used by snakefiles that import this snakefile.
+SRC_DIR = "src"
+DATA_DIR = "data"
+RAW_DIR = join(DATA_DIR, "raw")
+INTERMEDIATE_DIR = join(DATA_DIR, "intermediate")
+PROCESSED_DIR = join(DATA_DIR, "processed")
+FEATURES_DIR = join(PROCESSED_DIR, "features")
+PREDICTIONS_DIR = join(PROCESSED_DIR, "predictions")
+
+# Raw download targets, before cleaning up.
+# _Not_ intended to be used by snakefiles that import this snakefile.
+DOWNLOAD_DIR = join(RAW_DIR, "download")
+DOWNLOAD_CHALLENGE_DIR = join(DOWNLOAD_DIR, "challenge")
+DOWNLOAD_COMMUNITY_DIR = join(DOWNLOAD_DIR, "community")
+
+# Rules
+
+# Standardize the file structure of the challenge-phase files after the initial download.
+rule standardize_challenge:
+    output:
+        # The following directories correspond to groups in config-challenge.yml
+        join(RAW_DIR, "challenge_cispd_ancillary", "manifest.csv"),
+        join(RAW_DIR, "challenge_realpd_ancillary", "manifest.csv"),
+        join(RAW_DIR, "challenge_cispd_training", "manifest.csv"),
+        join(RAW_DIR, "challenge_realpd_training", "manifest.csv"),
+        join(RAW_DIR, "challenge_cispd_test", "manifest.csv"),
+        join(RAW_DIR, "challenge_realpd_test", "manifest.csv")
+    run:
+        print("It appears that this dataset can no longer be accessed via Synapse+BRAIN commons?")
+
+
+# Standardize the file structure of the community-phase files after the initial download.
+rule standardize_community:
+    output:
+        # The following directories correspond to groups in config-community.yml
+        join(RAW_DIR, "community_cispd_clinic_tasks", "manifest.csv"),
+        join(RAW_DIR, "community_cispd_updrs", "manifest.csv"),
+        join(RAW_DIR, "community_realpd_hauser_diary", "manifest.csv"),
+        join(RAW_DIR, "community_realpd_updrs", "manifest.csv")
+    run:
+        print("TODO")
+
+
+# Do the initial download of the community-phase clinical files using the synapse script.
+rule download_community_clinical:
+    output:
+        join(DOWNLOAD_COMMUNITY_DIR, "cis_pd_updrs.csv"),
+        join(DOWNLOAD_COMMUNITY_DIR, "cis_pd_clinic_tasks.csv"),
+        join(DOWNLOAD_COMMUNITY_DIR, "real_pd_updrs.csv"),
+        join(DOWNLOAD_COMMUNITY_DIR, "real_pd_hauser_diary.csv")
+    params:
+        script=join(SRC_DIR, "download_tables_from_synapse.py")
+    shell:
+        """
+        python {params.script} \
+            --output_dir {RAW_CLINICAL_DIR}
+        """

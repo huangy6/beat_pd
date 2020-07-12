@@ -1,0 +1,10 @@
+# List the measurement_id values of interest for feature extraction and prediction.
+measurements:
+  community_cispd_clinic_tasks:
+  - 
+  community_cispd_updrs:
+  - 
+  community_realpd_hauser_diary:
+  -
+  community_realpd_updrs:
+  - 

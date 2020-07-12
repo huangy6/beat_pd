@@ -28,11 +28,18 @@ conda env create -f environment.yml
 conda activate beat-pd-team-dbmi
 ```
 
+To enable the Snakefile to download the raw data files, set your Synapse credentials in the following environment variables:
+
+```sh
+export SYNAPSE_USERNAME="my_username_here"
+export SYNAPSE_PASSWORD="mY-sUpEr-SeCrEt-pAsSwOrD-HeRe"
+```
+
 
 ## Run locally
 
 ```sh
-snakemake --snakefile featurize.smk
+snakemake --snakefile featurize.smk --cores 1 --config team=dbmi
 ```
 
 ## Run on a cluster
@@ -49,7 +56,7 @@ cp ./cluster-profile.yml ~/.config/snakemake/beat-pd/config.yml
 Run the pipeline with the cluster profile.
 
 ```sh
-snakemake --profile beat-pd
+snakemake --profile beat-pd --config team=dbmi
 ```
 
 Note: these instructions are for SLURM.
