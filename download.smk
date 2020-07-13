@@ -34,13 +34,18 @@ rule standardize_challenge:
 
 # Standardize the file structure of the community-phase files after the initial download.
 rule standardize_community:
+    input:
+        cis_pd_updrs_csv=join(DOWNLOAD_COMMUNITY_DIR, "cis_pd_updrs.csv"),
+        cis_pd_clinic_tasks_csv=join(DOWNLOAD_COMMUNITY_DIR, "cis_pd_clinic_tasks.csv"),
+        real_pd_updrs_csv=join(DOWNLOAD_COMMUNITY_DIR, "real_pd_updrs.csv"),
+        real_pd_hauser_diary_csv=join(DOWNLOAD_COMMUNITY_DIR, "real_pd_hauser_diary.csv")
     output:
         # The following directories correspond to groups in config-community.yml
-        join(RAW_DIR, "community_cispd_clinic_tasks", "manifest.csv"),
-        join(RAW_DIR, "community_cispd_updrs", "manifest.csv"),
-        join(RAW_DIR, "community_realpd_hauser_diary", "manifest.csv"),
-        join(RAW_DIR, "community_realpd_updrs", "manifest.csv")
-    run:
+        cis_pd_updrs_manifest_csv=join(RAW_DIR, "community_cispd_clinic_tasks", "manifest.csv"),
+        cis_pd_clinic_tasks_manifest_csv=join(RAW_DIR, "community_cispd_updrs", "manifest.csv"),
+        real_pd_updrs_manifest_csv=join(RAW_DIR, "community_realpd_hauser_diary", "manifest.csv"),
+        real_pd_hauser_diary_manifest_csv=join(RAW_DIR, "community_realpd_updrs", "manifest.csv")
+    script:
         print("TODO")
 
 
