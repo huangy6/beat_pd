@@ -34,7 +34,7 @@ def dataset_to_feature_files(wildcards):
     return feature_files
 
 # Rules
-rule all:
+rule featurize_all:
     input:
         expand(
             join(FEATURES_DIR, "{dataset_id}", f"{TEAM_NAME}_features.csv"),

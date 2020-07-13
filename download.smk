@@ -5,9 +5,9 @@ from os.path import join
 SRC_DIR = "src"
 DATA_DIR = "data"
 RAW_DIR = join(DATA_DIR, "raw")
-INTERMEDIATE_DIR = join(DATA_DIR, "intermediate")
 PROCESSED_DIR = join(DATA_DIR, "processed")
 FEATURES_DIR = join(PROCESSED_DIR, "features")
+MODELS_DIR = join(PROCESSED_DIR, "models")
 PREDICTIONS_DIR = join(PROCESSED_DIR, "predictions")
 
 # Raw download targets, before cleaning up.

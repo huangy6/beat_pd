@@ -1,4 +1,7 @@
+from os.path import join
+import pandas as pd
 
+include: "featurize.smk"
 
 # Required output files
 # Reference: https://www.synapse.org/#!Synapse:syn22152015/wiki/604349
@@ -10,3 +13,34 @@
 
 # File format: CSV
 # columns: measurement_id, prediction
+
+# Rules
+rule predict_all:
+    input:
+        expand(
+            join(PREDICTIONS_DIR, "{dataset_id}", f"{TEAM_NAME}_predictions.csv"),
+            dataset_id=DATASET_IDS
+        )
+
+
+rule join_subject_predictions:
+    input:
+        # TODO: all subjects for this dataset
+    output:
+        join(PREDICTIONS_DIR, "{dataset_id}", f"{TEAM_NAME}_predictions.csv")
+
+
+rule predict_by_subject:
+    input:
+        join(MODELS_DIR, "{dataset_id}", "{cohort}_{subject_id}.model")
+    output:
+        join(PREDICTIONS_DIR, "{dataset_id}", "{cohort}_{subject_id}.csv")
+
+
+rule build_model_by_subject:
+    input:
+        # TODO: all features for this subject
+    output:
+        join(MODELS_DIR, "{dataset_id}", "{cohort}_{subject_id}.model")
+
+        
