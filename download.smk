@@ -17,6 +17,9 @@ DOWNLOAD_CHALLENGE_DIR = join(DOWNLOAD_DIR, "challenge")
 DOWNLOAD_COMMUNITY_DIR = join(DOWNLOAD_DIR, "community")
 
 # Rules
+checkpoint download_and_standardize:
+    output:
+        directory(join(RAW_DIR, "{dataset_id}"))
 
 # Standardize the file structure of the challenge-phase files after the initial download.
 rule standardize_challenge:
@@ -46,7 +49,7 @@ rule standardize_community:
         real_pd_updrs_manifest_csv=join(RAW_DIR, "community_realpd_hauser_diary", "manifest.csv"),
         real_pd_hauser_diary_manifest_csv=join(RAW_DIR, "community_realpd_updrs", "manifest.csv")
     script:
-        print("TODO")
+        join(SRC_DIR, "standardize_community_files.py")
 
 
 # Do the initial download of the community-phase clinical files using the synapse script.
@@ -61,5 +64,5 @@ rule download_community_clinical:
     shell:
         """
         python {params.script} \
-            --output_dir {RAW_CLINICAL_DIR}
+            --output_dir {DOWNLOAD_COMMUNITY_DIR}
         """

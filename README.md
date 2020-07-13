@@ -35,11 +35,28 @@ export SYNAPSE_USERNAME="my_username_here"
 export SYNAPSE_PASSWORD="mY-sUpEr-SeCrEt-pAsSwOrD-HeRe"
 ```
 
+## Downloading the raw data
+
+```
+data/raw/
+  train/
+  test/
+  ancillary/
+  clinical/ # downloaded by the 
+    manifest.csv
+
+```
+
 
 ## Run locally
 
 ```sh
-snakemake --snakefile featurize.smk --cores 1 --config team=dbmi
+snakemake \
+  --dryrun \
+  --cores 1 \
+  --snakefile featurize.smk \
+  --configfile config-community.yml \
+  --config team=dbmi
 ```
 
 ## Run on a cluster

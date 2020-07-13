@@ -1,26 +1,17 @@
 from os.path import join
+import pandas as pd
 
 include: "download.smk"
 
-configfile: "config.yml"
-
-
-# The team= argument should be supplied at the command line.
 assert('team' in config.keys())
+assert('datasets' in config.keys())
 
-# The measurements dict should be supplied via the config.yml file.
-assert('measurements' in config.keys())
-
-# An optional dataset= argument can be supplied at the command line
-# if only interested in running for one of the measurements dict keys.
-assert(config['dataset'] in config['measurements'].keys() if 'dataset' in config.keys() else True)
-
-# Get the names of the data sets ("test", "train", etc.)
-# If the --config dataset=test command line override has been provided,
-# then restrict to a single dataset of interest.
-DATASET_IDS = config['measurements'].keys() if 'dataset' not in config.keys() else [ config['dataset'] ]
-
-# The team name config argument.
+# Get the names of the data sets of interest ("test", "train", etc.)
+# These correspond to subdirectories
+# - data/raw/{dataset_id}/
+# - data/processed/features/{dataset_id}/
+# - etc.
+DATASET_IDS = config['datasets']
 TEAM_NAME = config['team']
 
 # Required output files
@@ -32,9 +23,15 @@ TEAM_NAME = config['team']
 # File format: CSV
 # columns: measurement_id, metadata_start, metadata_stop, feature[FEATURENAME1], feature[FEATURENAME2],...
 
-# File annotations: JSON
-# {"method":"Some method", "window_size": 30, "overlap": 10, "aggregation_strategy":"None", "resampling_rate":"None"}
-
+# Helper functions
+def dataset_to_feature_files(wildcards):
+    # Get the list of measurement files from the manifest.csv at the checkpoint.
+    manifest_file = join(checkpoints.download_and_standardize.get(**wildcards).output[0], "manifest.csv")
+    manifest_df = pd.read_csv(manifest_file)
+    measurement_files = manifest_df["measurement_file"].values.tolist()
+    # The feature files have the same names as the measurement files, but they should be in FEATURES_DIR.
+    feature_files = [ join(FEATURES_DIR, wildcards.dataset_id, m_file) for m_file in measurement_files ]
+    return feature_files
 
 # Rules
 rule all:
@@ -48,20 +45,31 @@ rule all:
             dataset_id=DATASET_IDS
         )
 
-rule dataset_extract_features:
+
+# Combine extracted measurement feature files into one dataset-level features file.
+rule join_dataset_features:
     input:
-        (lambda w: expand(
-            join(FEATURES_DIR, "{{dataset_id}}", "{measurement_id}.csv"),
-            measurement_id=config['measurements'][w.dataset_id]
-        ))
+        dataset_to_feature_files
     output:
         join(FEATURES_DIR, "{dataset_id}", f"{TEAM_NAME}_features.csv"),
     script:
         join(SRC_DIR, "join_dataset_features.py")
 
+
+# Extract features for a single measurement file.
+rule extract_features_by_measurement:
+    input:
+        join(RAW_DIR, "{dataset_id}", "{cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv")
+    output:
+        join(FEATURES_DIR, "{dataset_id}", "{cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv"),
+    script:
+        join(SRC_DIR, "extract_features_by_measurement.py")
+
+
+# Create the dataset-level feature set annotations file.
 rule create_feature_set_annotations:
     output:
-        join(FEATURES_DIR, "{dataset_id}", f"{TEAM_NAME}_annotations.csv"),
+        join(FEATURES_DIR, "{dataset_id}", f"{TEAM_NAME}_annotations.json"),
     script:
         join(SRC_DIR, "create_feature_set_annotations.py")
 
