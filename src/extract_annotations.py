@@ -3,9 +3,7 @@ import json
 if __name__ == "__main__":
     # Just manually create the annotations
 
-    dataset_id = snakemake.wildcards['dataset_id']
-
-    print(f"TODO: create annotations for {dataset_id}")
+    print("TODO: update annotations")
 
     with open(snakemake.output[0], 'w') as f:
         json.dump({

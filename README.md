@@ -54,7 +54,7 @@ data/raw/
 snakemake \
   --dryrun \
   --cores 1 \
-  --snakefile featurize.smk \
+  --snakefile predict.smk \
   --config team=dbmi
 ```
 
