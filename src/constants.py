@@ -27,3 +27,31 @@ ALL_LABEL_COLUMNS = [
     LABEL_COLUMNS.DYSKINESIA.value,
     LABEL_COLUMNS.TREMOR.value
 ]
+
+# Standardized measurement column names
+class MEASUREMENT_COLUMNS(Enum):
+    X = "x"
+    Y = "y"
+    Z = "z"
+    TIMESTAMP = "timestamp"
+    DEVICE_ID = "device_id"
+
+# Measurement column names by cohort
+COHORT_TO_MEASUREMENT_COLUMN_MAP = {
+    "cispd": {
+        MEASUREMENT_COLUMNS.X.value: "X",
+        MEASUREMENT_COLUMNS.Y.value: "Y",
+        MEASUREMENT_COLUMNS.Z.value: "Z",
+        MEASUREMENT_COLUMNS.TIMESTAMP.value: "Timestamp",
+        MEASUREMENT_COLUMNS.DEVICE_ID.value: None,
+    },
+    "realpd": {
+        MEASUREMENT_COLUMNS.X.value: "x",
+        MEASUREMENT_COLUMNS.Y.value: "y",
+        MEASUREMENT_COLUMNS.Z.value: "z",
+        MEASUREMENT_COLUMNS.TIMESTAMP.value: "t",
+        MEASUREMENT_COLUMNS.DEVICE_ID.value: "device_id",
+    }
+}
+
+RMS_G_CONSTANT = 1 # TODO: may need to vary based on cohort/device
