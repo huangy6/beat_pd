@@ -1,3 +1,5 @@
+# TODO: fix
+
 from os.path import join
 
 # Directory / file constants
@@ -24,13 +26,14 @@ checkpoint download_and_standardize:
 # Standardize the file structure of the challenge-phase files after the initial download.
 rule standardize_challenge:
     output:
-        # The following directories correspond to groups in config-challenge.yml
-        join(RAW_DIR, "challenge_cispd_ancillary", "manifest.csv"),
-        join(RAW_DIR, "challenge_realpd_ancillary", "manifest.csv"),
-        join(RAW_DIR, "challenge_cispd_training", "manifest.csv"),
-        join(RAW_DIR, "challenge_realpd_training", "manifest.csv"),
-        join(RAW_DIR, "challenge_cispd_test", "manifest.csv"),
-        join(RAW_DIR, "challenge_realpd_test", "manifest.csv")
+        directory(join(RAW_DIR, "challenge_cispd")),
+        directory(join(RAW_DIR, "challenge_realpd")),
+        join(RAW_DIR, "challenge_cispd", "train", "manifest.csv"),
+        join(RAW_DIR, "challenge_realpd", "train", "manifest.csv"),
+        join(RAW_DIR, "challenge_cispd", "train", "labels.csv"),
+        join(RAW_DIR, "challenge_realpd", "train", "labels.csv"),
+        join(RAW_DIR, "challenge_cispd", "test", "manifest.csv"),
+        join(RAW_DIR, "challenge_realpd", "test", "manifest.csv")
     run:
         print("It appears that this dataset can no longer be accessed via Synapse+BRAIN commons?")
 
@@ -43,11 +46,14 @@ rule standardize_community:
         real_pd_updrs_csv=join(DOWNLOAD_COMMUNITY_DIR, "real_pd_updrs.csv"),
         real_pd_hauser_diary_csv=join(DOWNLOAD_COMMUNITY_DIR, "real_pd_hauser_diary.csv")
     output:
-        # The following directories correspond to groups in config-community.yml
-        cis_pd_updrs_manifest_csv=join(RAW_DIR, "community_cispd_clinic_tasks", "manifest.csv"),
-        cis_pd_clinic_tasks_manifest_csv=join(RAW_DIR, "community_cispd_updrs", "manifest.csv"),
-        real_pd_updrs_manifest_csv=join(RAW_DIR, "community_realpd_hauser_diary", "manifest.csv"),
-        real_pd_hauser_diary_manifest_csv=join(RAW_DIR, "community_realpd_updrs", "manifest.csv")
+        directory(join(RAW_DIR, "community_cispd_clinic_tasks")),
+        directory(join(RAW_DIR, "community_cispd_updrs")),
+        directory(join(RAW_DIR, "community_realpd_hauser_diary")),
+        directory(join(RAW_DIR, "community_realpd_updrs")),
+        cis_pd_updrs_manifest_csv=join(RAW_DIR, "community_cispd_clinic_tasks", "test", "manifest.csv"),
+        cis_pd_clinic_tasks_manifest_csv=join(RAW_DIR, "community_cispd_updrs", "test", "manifest.csv"),
+        real_pd_updrs_manifest_csv=join(RAW_DIR, "community_realpd_hauser_diary", "test", "manifest.csv"),
+        real_pd_hauser_diary_manifest_csv=join(RAW_DIR, "community_realpd_updrs", "test", "manifest.csv")
     script:
         join(SRC_DIR, "standardize_community_files.py")
 
@@ -66,3 +72,4 @@ rule download_community_clinical:
         python {params.script} \
             --output_dir {DOWNLOAD_COMMUNITY_DIR}
         """
+# TODO: import this snakefile as a subworkflow in featurize.smk and/or predict.smk

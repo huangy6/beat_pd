@@ -1,7 +1,0 @@
-datasets:
-  - challenge_cispd_ancillary
-  - challenge_cispd_training
-  - challenge_cispd_test
-  - challenge_realpd_ancillary
-  - challenge_realpd_training
-  - challenge_realpd_test
