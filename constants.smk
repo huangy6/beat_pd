@@ -1,7 +1,5 @@
 from os.path import join
 
-configfile: 'config.yml'
-
 TEST = "test"
 TRAIN = "train"
 SPLITS = [TEST, TRAIN]

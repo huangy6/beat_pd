@@ -38,13 +38,30 @@ export SYNAPSE_PASSWORD="mY-sUpEr-SeCrEt-pAsSwOrD-HeRe"
 ## Downloading the raw data
 
 ```
-data/raw/
-  train/
-  test/
-  ancillary/
-  clinical/ # downloaded by the 
-    manifest.csv
-
+data/
+├── raw/
+│   ├── train/
+│   │   ├── {cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv
+│   │   ├── labels.csv
+│   │   └── manifest.csv
+│   └── test/
+│       ├── {cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv
+│       └── manifest.csv
+└── processed/
+    ├── features/
+    │   ├── train/
+    │   │   ├── {cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv
+    │   │   └── features.csv
+    │   ├── test/
+    │   │   ├── {cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv
+    │   │   └── features.csv
+    │   └── annotations.json
+    ├── predictions/
+    │   └── test/
+    │       ├── {cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv
+    │       └── predictions.csv
+    └── models/
+        └── {cohort}_{subject_id}.model
 ```
 
 
