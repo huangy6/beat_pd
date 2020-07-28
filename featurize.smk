@@ -37,7 +37,7 @@ rule combine_features:
     output:
         join(FEATURES_DIR, "{split}", "features.csv"),
     script:
-        join(SRC_DIR, "join_dataset_features.py")
+        join(SRC_DIR, "combine_features.py")
 
 
 # Extract features for a single measurement file.

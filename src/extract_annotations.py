@@ -1,7 +1,7 @@
 import json
 
+
 if __name__ == "__main__":
-    # Just manually create the annotations
 
     print("TODO: update annotations")
 

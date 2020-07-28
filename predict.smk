@@ -64,11 +64,9 @@ rule predict_by_measurement:
 # Train a model per-subject by passing all subject measurements and labels to the training script.
 rule train_by_subject:
     input:
-        dataset_and_subject_to_feature_files,
+        features=dataset_and_subject_to_feature_files,
         labels=join(RAW_TRAIN_DIR, "labels.csv"),
     output:
         join(MODELS_DIR, "{cohort}_{subject_id}.model")
     script:
         join(SRC_DIR, "train_by_subject.py")
-
-        

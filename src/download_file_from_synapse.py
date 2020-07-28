@@ -7,7 +7,6 @@ def download_file_from_synapse(synapse_id, output_dir):
     temp.close()
 
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--synapse_id', type=str, required=True)

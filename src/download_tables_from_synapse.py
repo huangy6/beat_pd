@@ -70,6 +70,7 @@ def download_tables_from_synapse(output_dir):
 
     temp.close()
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output_dir', type=str, required=True)
