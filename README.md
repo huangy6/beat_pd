@@ -37,7 +37,7 @@ export SYNAPSE_PASSWORD="mY-sUpEr-SeCrEt-pAsSwOrD-HeRe"
 
 ## Downloading the raw data
 
-The inputs to the pipeline should be placed in the `data/raw/` directory.
+The inputs to the pipeline should be placed in the `data/raw/` directory (see demo files).
 The pipeline will generate all of the files in the `data/processed/` directory.
 
 ```
@@ -86,7 +86,7 @@ Copy the cluster profile to the `~/.config/` directory.
 
 ```sh
 mkdir -p ~/.config/snakemake/beat-pd
-cp ./cluster-profile.yml ~/.config/snakemake/beat-pd/config.yml
+cp ./cluster-profile.yml ~/.config/snakemake/beat-pd/config.yaml
 ```
 
 Run the pipeline with the cluster profile.

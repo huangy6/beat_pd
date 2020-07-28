@@ -1,0 +1,3 @@
+measurement_id,measurement_file,subject_id,cohort,device,instrument
+0e80673b-8c90-474f-8388-00fdf25795e4,cispd_smartwatch_accelerometer_1004_0e80673b-8c90-474f-8388-00fdf25795e4.csv,1004,cispd,smartwatch,accelerometer
+a7b61d40-9f26-4878-a2d7-bd766b8ae6f5,cispd_smartwatch_accelerometer_1004_a7b61d40-9f26-4878-a2d7-bd766b8ae6f5.csv,1004,cispd,smartwatch,accelerometer

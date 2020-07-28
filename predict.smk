@@ -29,10 +29,11 @@ def dataset_and_subject_to_feature_files(w):
     # Get the list of measurement files from the manifest.csv at the checkpoint.
     manifest_file = join(RAW_DIR, TRAIN, "manifest.csv")
     manifest_df = pd.read_csv(manifest_file)
-    subject_df = manifest_df.loc[manifest_df["subject_id"] == w.subject_id]
+    subject_df = manifest_df.loc[(manifest_df["subject_id"].astype(str) == w.subject_id) & (manifest_df["cohort"] == w.cohort)]
     measurement_files = subject_df["measurement_file"].values.tolist()
     # The prediction files have the same names as the measurement files, but they should be in PREDICTIONS_DIR.
-    feature_files = [ join(PREDICTIONS_DIR, TRAIN, m_file) for m_file in measurement_files ]
+    feature_files = [ join(FEATURES_DIR, TRAIN, m_file) for m_file in measurement_files ]
+    print(feature_files)
     return feature_files
 
 # Rules
