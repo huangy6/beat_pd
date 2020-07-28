@@ -28,7 +28,7 @@ conda env create -f environment.yml
 conda activate beat-pd-team-dbmi
 ```
 
-To enable the Snakefile to download the raw data files, set your Synapse credentials in the following environment variables:
+To enable the Snakefile to download raw data files (for the community-phase clinical measurements), set your Synapse credentials in the following environment variables:
 
 ```sh
 export SYNAPSE_USERNAME="my_username_here"
@@ -36,6 +36,9 @@ export SYNAPSE_PASSWORD="mY-sUpEr-SeCrEt-pAsSwOrD-HeRe"
 ```
 
 ## Downloading the raw data
+
+The inputs to the pipeline should be placed in the `data/raw/` directory.
+The pipeline will generate all of the files in the `data/processed/` directory.
 
 ```
 data/
