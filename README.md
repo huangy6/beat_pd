@@ -70,13 +70,33 @@ data/
 
 ## Run locally
 
+Download raw data only:
+
 ```sh
 snakemake \
-  --dryrun \
+  --cores 1 \
+  --snakefile download.smk \
+  --config team=dbmi
+```
+
+Download raw data and extract features only:
+
+```sh
+snakemake \
+  --cores 1 \
+  --snakefile featurize.smk \
+  --config team=dbmi
+```
+
+Download raw data, extract features, train and predict:
+
+```sh
+snakemake \
   --cores 1 \
   --snakefile predict.smk \
   --config team=dbmi
 ```
+
 
 ## Run on a cluster
 

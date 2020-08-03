@@ -3,7 +3,13 @@ import numpy as np
 
 
 def combine_predictions(prediction_files):
-    print("TODO: combine_predictions.py")
+    df = pd.DataFrame()
+    
+    for prediction_file in prediction_files:
+        prediction_df = pd.read_csv(prediction_file)
+        df = df.append(prediction_df, ignore_index=True)
+    
+    return df
 
 
 if __name__ == "__main__":

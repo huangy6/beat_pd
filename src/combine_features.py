@@ -3,7 +3,13 @@ import numpy as np
 
 
 def combine_features(feature_files):
-    print("TODO: combine_features.py")
+    df = pd.DataFrame()
+    
+    for feature_file in feature_files:
+        feature_df = pd.read_csv(feature_file)
+        df = df.append(feature_df, ignore_index=True)
+    
+    return df
 
 
 if __name__ == "__main__":

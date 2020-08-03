@@ -4,6 +4,7 @@ import tsfresh as tsf
 
 from constants import *
 
+
 def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10), starts=None, reset_time=True):
     if starts is None:
         starts = [pd.Timedelta(seconds=t) for t in random.uniform(low=0, high=float(seq.index.max()-samp_len), size=n_samples)]
@@ -21,6 +22,7 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10
     else:
         return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)]
 
+
 def standardize_measurement_df(df, cohort, use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
     cohort_has_device_id = (COHORT_TO_MEASUREMENT_COLUMN_MAP[cohort][MEASUREMENT_COLUMNS.DEVICE_ID.value] is not None)
     col_rename_map = { v: k for k, v in COHORT_TO_MEASUREMENT_COLUMN_MAP[cohort].items() if v is not None }
@@ -36,7 +38,6 @@ def standardize_measurement_df(df, cohort, use_time_index=False, resample=pd.Tim
             df = df.groupby(MEASUREMENT_COLUMNS.DEVICE_ID.value)
         df = df.resample(resample, level=MEASUREMENT_COLUMNS.TIMESTAMP.value).mean()
     return df
-
 
 
 def extract_features_by_measurement(measurement_df, cohort, device, instrument, subject_id, measurement_id):
@@ -81,4 +82,4 @@ if __name__ == "__main__":
     subject_id = snakemake.wildcards['subject_id']
     measurement_id = snakemake.wildcards['measurement_id']
     features_df = extract_features_by_measurement(measurement_df, cohort, device, instrument, subject_id, measurement_id)
-    features_df.to_csv(snakemake.output[0])
+    features_df.to_csv(snakemake.output[0], index=False)
