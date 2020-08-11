@@ -43,7 +43,7 @@ def extract_features_by_measurement(measurement_df, cohort, device, instrument, 
 
     if cohort == "cispd":
         colnames = {'t_colname': 'Timestamp', 'xyz_colnames': ['X', 'Y', 'Z']}
-    elif cohort == "realpd" and device == "smartwatch"
+    elif cohort == "realpd" and device == "smartwatch":
         colnames = {'devid_colnames': ['device_id']}
     
     resample_rate = F_HYPERPARAM_VALS[F_HYPERPARAMS.RESAMPLE_RATE.value]
