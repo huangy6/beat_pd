@@ -4,8 +4,6 @@ from constants import F_HYPERPARAMS, F_HYPERPARAM_VALS
 
 if __name__ == "__main__":
 
-    print("TODO: update annotations")
-
     with open(snakemake.output[0], 'w') as f:
         json.dump({
             "method": "ensemble models on windowed time series features",
