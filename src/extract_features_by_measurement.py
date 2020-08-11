@@ -24,8 +24,8 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10
         return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)]
 
 
-def standardize_measurement_df(df, cohort, use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
-    cohort_has_device_id = (COHORT_TO_MEASUREMENT_COLUMN_MAP[cohort][MEASUREMENT_COLUMNS.DEVICE_ID.value] is not None)
+def standardize_measurement_df(df, cohort, device, use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
+    cohort_has_device_id = (cohort == "realpd" and device == "smartwatch")
     col_rename_map = { v: k for k, v in COHORT_TO_MEASUREMENT_COLUMN_MAP[cohort].items() if v is not None }
     
     df = df.rename(columns=col_rename_map)
@@ -43,7 +43,7 @@ def standardize_measurement_df(df, cohort, use_time_index=False, resample=pd.Tim
 
 def extract_features_by_measurement(measurement_df, cohort, device, instrument, subject_id, measurement_id):
     resample_rate = F_HYPERPARAM_VALS[F_HYPERPARAMS.RESAMPLE_RATE.value]
-    seq = standardize_measurement_df(measurement_df, cohort, use_time_index=True, resample=f'{resample_rate}ms')
+    seq = standardize_measurement_df(measurement_df, cohort, device, use_time_index=True, resample=f'{resample_rate}ms')
     
     # Some slight interpolation for missing values.
     seq = seq.interpolate(axis=0, limit=1, method='linear')
