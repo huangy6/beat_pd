@@ -64,7 +64,15 @@ data/
     │       ├── {cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv
     │       └── predictions.csv
     └── models/
-        └── {cohort}_{subject_id}.model
+        ├── {cohort}_{device}_{instrument}_{subject_id}.dyskinesia.cv_results.csv
+        ├── {cohort}_{device}_{instrument}_{subject_id}.dyskinesia.model_info.json
+        ├── {cohort}_{device}_{instrument}_{subject_id}.dyskinesia.model
+        ├── {cohort}_{device}_{instrument}_{subject_id}.on_off.cv_results.csv
+        ├── {cohort}_{device}_{instrument}_{subject_id}.on_off.model_info.json
+        ├── {cohort}_{device}_{instrument}_{subject_id}.on_off.model
+        ├── {cohort}_{device}_{instrument}_{subject_id}.tremor.cv_results.csv
+        ├── {cohort}_{device}_{instrument}_{subject_id}.tremor.model_info.json
+        └── {cohort}_{device}_{instrument}_{subject_id}.tremor.model
 ```
 
 
