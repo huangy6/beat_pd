@@ -11,7 +11,7 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10
         starts = [pd.Timedelta(seconds=t) for t in random.uniform(low=0, high=float(seq.index.max()-samp_len), size=n_samples)]
     idx = pd.IndexSlice
     if type(seq.index) == pd.MultiIndex:
-        samples = [seq.xs(idx[start:start+samp_len], level=MEASUREMENT_COLUMNS.TIMESTAMP.value, drop_level=False) for start in starts]
+        samples = [seq.xs(idx[start:start+samp_len], level='t', drop_level=False) for start in starts]
     else:
         samples = [seq.loc[start:start+samp_len] for start in starts]
     # Some samples will be empty/incomplete due to lapses in measurements
@@ -19,7 +19,7 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10
     if not reset_time:
         return samples
     if type(seq.index) == pd.MultiIndex:
-        return [samp.set_index(samp.index.set_levels(samp.index.levels[1] - start, level=MEASUREMENT_COLUMNS.TIMESTAMP.value)) for samp,start in zip(samples, starts)]
+        return [samp.set_index(samp.index.set_levels(samp.index.levels[1] - start, level='t')) for samp,start in zip(samples, starts)]
     else:
         return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)]
 
