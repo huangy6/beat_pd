@@ -117,10 +117,20 @@ mkdir -p ~/.config/snakemake/beat-pd
 cp ./cluster-profile.yml ~/.config/snakemake/beat-pd/config.yaml
 ```
 
-Run the pipeline with the cluster profile.
+To run only the feature extraction part of the pipeline with the cluster profile:
 
 ```sh
 snakemake \
+  --snakefile featurize.smk \
+  --profile beat-pd \
+  --config team=dbmi base=/n/scratch3/users/m/mk596/pd
+```
+
+To run the feature extraction, training, and prediction pipeline with the cluster profile:
+
+```sh
+snakemake \
+  --snakefile predict.smk \
   --profile beat-pd \
   --config team=dbmi base=/n/scratch3/users/m/mk596/pd
 ```
