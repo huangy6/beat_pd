@@ -120,7 +120,9 @@ cp ./cluster-profile.yml ~/.config/snakemake/beat-pd/config.yaml
 Run the pipeline with the cluster profile.
 
 ```sh
-snakemake --profile beat-pd --config team=dbmi
+snakemake \
+  --profile beat-pd \
+  --config team=dbmi base=/n/scratch3/users/m/mk596/pd
 ```
 
 Note: these instructions are for SLURM.

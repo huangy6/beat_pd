@@ -6,7 +6,7 @@ SPLITS = [TEST, TRAIN]
 
 # Directory / file constants
 SRC_DIR = "src"
-DATA_DIR = "data"
+DATA_DIR = join(config['base'], "data") if 'base' in config.keys() else "data"
 RAW_DIR = join(DATA_DIR, "raw")
 RAW_TRAIN_DIR = join(RAW_DIR, TRAIN)
 RAW_TEST_DIR = join(RAW_DIR, TEST)
