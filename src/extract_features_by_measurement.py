@@ -24,26 +24,30 @@ def sample_seq(seq: pd.DataFrame, n_samples=10, samp_len=pd.Timedelta(seconds=10
         return [samp.set_index(samp.index - start) for samp,start in zip(samples, starts)]
 
 
-def standardize_measurement_df(df, cohort, device, use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
-    cohort_has_device_id = (cohort == "realpd" and device == "smartwatch")
-    col_rename_map = { v: k for k, v in COHORT_TO_MEASUREMENT_COLUMN_MAP[cohort].items() if v is not None }
-    
-    df = df.rename(columns=col_rename_map)
-    time_index = pd.to_timedelta(df[MEASUREMENT_COLUMNS.TIMESTAMP.value], unit="s") if use_time_index else df[MEASUREMENT_COLUMNS.TIMESTAMP.value]
-    devid_colnames = [ MEASUREMENT_COLUMNS.DEVICE_ID.value ] if cohort_has_device_id else []
-    devid_index = [ df[c] for c in devid_colnames ]
+def read_seq(df, t_colname='t', xyz_colnames=['x', 'y', 'z'], devid_colnames=[], use_time_index=False, resample=pd.Timedelta(seconds=(1/50))):
+    df = df.rename(columns=dict(zip([t_colname, *xyz_colnames], ['t', 'x', 'y', 'z'])))
+
+    time_index = pd.to_timedelta(df['t'], unit="s") if use_time_index else df['t']
+    devid_index = [df[c] for c in devid_colnames]
     # Drop explicitly to avoid funny business
-    df = df.set_index([*devid_index, time_index,], drop=False).drop(columns=[MEASUREMENT_COLUMNS.TIMESTAMP.value, *devid_colnames])
+    df = df.set_index([*devid_index, time_index,], drop=False).drop(columns=['t', *devid_colnames])
     if use_time_index and resample is not None:
-        if cohort_has_device_id:
-            df = df.groupby(MEASUREMENT_COLUMNS.DEVICE_ID.value)
-        df = df.resample(resample, level=MEASUREMENT_COLUMNS.TIMESTAMP.value).mean()
+        if devid_colnames:
+            df = df.groupby(devid_colnames)
+        df = df.resample(resample, level='t').mean()
     return df
 
 
 def extract_features_by_measurement(measurement_df, cohort, device, instrument, subject_id, measurement_id):
+    colnames=dict()
+
+    if cohort == "cispd":
+        colnames = {'t_colname': 'Timestamp', 'xyz_colnames': ['X', 'Y', 'Z']}
+    elif cohort == "realpd" and device == "smartwatch"
+        colnames = {'devid_colnames': ['device_id']}
+    
     resample_rate = F_HYPERPARAM_VALS[F_HYPERPARAMS.RESAMPLE_RATE.value]
-    seq = standardize_measurement_df(measurement_df, cohort, device, use_time_index=True, resample=f'{resample_rate}ms')
+    seq = read_seq(measurement_df, use_time_index=True, resample='100ms', **colnames)
     
     # Some slight interpolation for missing values.
     seq = seq.interpolate(axis=0, limit=1, method='linear')
@@ -56,7 +60,7 @@ def extract_features_by_measurement(measurement_df, cohort, device, instrument, 
 
     window_offset = F_HYPERPARAM_VALS[F_HYPERPARAMS.WINDOW_OFFSET.value]
     window_size = F_HYPERPARAM_VALS[F_HYPERPARAMS.WINDOW_SIZE.value]
-    colnames=dict()
+    
 
     window_starts = [pd.Timedelta(seconds=t) for t in [*range(0, rms.index.get_level_values(MEASUREMENT_COLUMNS.TIMESTAMP.value).max().seconds - window_size, window_offset)]]
     samples = sample_seq(rms, starts=window_starts, samp_len=pd.Timedelta(seconds=window_size), reset_time=True)
