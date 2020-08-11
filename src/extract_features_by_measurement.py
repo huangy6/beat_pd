@@ -41,16 +41,20 @@ def standardize_measurement_df(df, cohort, use_time_index=False, resample=pd.Tim
 
 
 def extract_features_by_measurement(measurement_df, cohort, device, instrument, subject_id, measurement_id):
-    seq = standardize_measurement_df(measurement_df, cohort, use_time_index=True, resample='100ms')
-    # some slight interpolation for missing values
+    resample_rate = F_HYPERPARAM_VALS[F_HYPERPARAMS.RESAMPLE_RATE.value]
+    seq = standardize_measurement_df(measurement_df, cohort, use_time_index=True, resample=f'{resample_rate}ms')
+    
+    # Some slight interpolation for missing values.
     seq = seq.interpolate(axis=0, limit=1, method='linear')
 
-    # subtract constant for gravity
-    rms = pd.DataFrame({ 'rms': np.sqrt(np.square(seq).sum(axis=1, skipna=False)) - RMS_G_CONSTANT })
+    # Gravity constant depends on cohort, device, and instrument type.
+    rms_g_constant = F_HYPERPARAM_VALS[F_HYPERPARAMS.RMS_G_CONSTANT.value][(cohort, device, instrument)]
 
-    # TODO: refactor
-    window_offset=5
-    window_size=10 
+    # Subtract constant for gravity.
+    rms = pd.DataFrame({ 'rms': np.sqrt(np.square(seq).sum(axis=1, skipna=False)) - rms_g_constant })
+
+    window_offset = F_HYPERPARAM_VALS[F_HYPERPARAMS.WINDOW_OFFSET.value]
+    window_size = F_HYPERPARAM_VALS[F_HYPERPARAMS.WINDOW_SIZE.value]
     colnames=dict()
 
     window_starts = [pd.Timedelta(seconds=t) for t in [*range(0, rms.index.get_level_values(MEASUREMENT_COLUMNS.TIMESTAMP.value).max().seconds - window_size, window_offset)]]
@@ -62,17 +66,15 @@ def extract_features_by_measurement(measurement_df, cohort, device, instrument, 
             df['ord'] += '-' + df[colnames['devid_colnames'][0]]
             df.drop(columns=colnames['devid_colnames'], inplace=True)
     
-    # remove windows with nulls
+    # Remove windows with nulls.
     tsf_data = pd.concat(samples, axis=0).groupby('ord').filter(lambda x: x.notnull().values.all())
-    
+    # Extract time series features with tsfresh.
     tsf_df = tsf.extract_features(tsf_data, column_id="ord", disable_progressbar=True, n_jobs=0)
-    # TODO: is below subject or measurment?
-    #samp_id = os.path.splitext(os.path.basename(input_fp))[0]
-    #tsf_df['samp_id'] = samp_id
+
+    # Append the measurement ID.
+    tsf_df['measurement_id'] = measurement_id
 
     return tsf_df
-
-
 
 if __name__ == "__main__":
     measurement_df = pd.read_csv(snakemake.input[0])
@@ -82,4 +84,4 @@ if __name__ == "__main__":
     subject_id = snakemake.wildcards['subject_id']
     measurement_id = snakemake.wildcards['measurement_id']
     features_df = extract_features_by_measurement(measurement_df, cohort, device, instrument, subject_id, measurement_id)
-    features_df.to_csv(snakemake.output[0], index=False)
+    features_df.to_csv(snakemake.output[0], index=True)

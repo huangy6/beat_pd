@@ -54,4 +54,23 @@ COHORT_TO_MEASUREMENT_COLUMN_MAP = {
     }
 }
 
-RMS_G_CONSTANT = 1 # TODO: may need to vary based on cohort/device
+class F_HYPERPARAMS(Enum):
+    WINDOW_SIZE = "window_size"
+    WINDOW_OFFSET = "window_offset"
+    RESAMPLE_RATE = "resample_rate"
+    RMS_G_CONSTANT = "rms_g_constant"
+
+
+F_HYPERPARAM_VALS = {
+    F_HYPERPARAMS.WINDOW_SIZE.value: 10, # s
+    F_HYPERPARAMS.WINDOW_OFFSET.value: 5, # s
+    F_HYPERPARAMS.RESAMPLE_RATE.value: 100, # ms
+    # Gravity constant term varies by cohort, device, and instrument
+    F_HYPERPARAMS.RMS_G_CONSTANT.value: {
+        ("cispd", "smartphone", "accelerometer"): 1,
+        ("cispd", "smartwatch", "accelerometer"): 1,
+        ("realpd", "smartphone", "accelerometer"): 9.81,
+        ("realpd", "smartwatch", "accelerometer"): 9.81,
+        ("realpd", "smartwatch", "gyroscope"): 0,
+    }
+}

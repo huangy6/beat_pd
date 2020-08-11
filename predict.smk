@@ -16,7 +16,7 @@ include: 'featurize.smk'
 # columns: measurement_id, prediction
 
 # Helper functions
-def dataset_to_prediction_files(w):
+def get_dataset_prediction_files(w):
     # Get the list of measurement files from the manifest.csv at the checkpoint.
     manifest_file = join(RAW_DIR, TEST, "manifest.csv")
     manifest_df = pd.read_csv(manifest_file)
@@ -25,15 +25,19 @@ def dataset_to_prediction_files(w):
     prediction_files = [ join(PREDICTIONS_DIR, TEST, m_file) for m_file in measurement_files ]
     return prediction_files
 
-def dataset_and_subject_to_feature_files(w):
+def get_subject_feature_files(w):
     # Get the list of measurement files from the manifest.csv at the checkpoint.
     manifest_file = join(RAW_DIR, TRAIN, "manifest.csv")
     manifest_df = pd.read_csv(manifest_file)
-    subject_df = manifest_df.loc[(manifest_df["subject_id"].astype(str) == w.subject_id) & (manifest_df["cohort"] == w.cohort)]
+    subject_df = manifest_df.loc[
+        (manifest_df["cohort"].astype(str) == w.cohort)
+        & (manifest_df["device"].astype(str) == w.device)
+        & (manifest_df["instrument"].astype(str) == w.instrument)
+        & (manifest_df["subject_id"].astype(str) == w.subject_id)
+    ]
     measurement_files = subject_df["measurement_file"].values.tolist()
     # The prediction files have the same names as the measurement files, but they should be in PREDICTIONS_DIR.
     feature_files = [ join(FEATURES_DIR, TRAIN, m_file) for m_file in measurement_files ]
-    print(feature_files)
     return feature_files
 
 # Rules
@@ -44,7 +48,7 @@ rule predict_all:
 # Combine all predictions for a dataset into a single prediction file.
 rule combine_predictions:
     input:
-        dataset_to_prediction_files
+        get_dataset_prediction_files
     output:
         join(PREDICTIONS_DIR, "predictions.csv")
     script:
@@ -53,20 +57,23 @@ rule combine_predictions:
 
 rule predict_by_measurement:
     input:
-        model=join(MODELS_DIR, "{cohort}_{subject_id}.model"),
+        dyskinesia_model=join(MODELS_DIR, "{cohort}_{device}_{instrument}_{subject_id}.dyskinesia.model"),
+        on_off_model=join(MODELS_DIR, "{cohort}_{device}_{instrument}_{subject_id}.on_off.model"),
+        tremor_model=join(MODELS_DIR, "{cohort}_{device}_{instrument}_{subject_id}.tremor.model"),
         measurement=join(FEATURES_DIR, TEST, "{cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv"),
     output:
         join(PREDICTIONS_DIR, TEST, "{cohort}_{device}_{instrument}_{subject_id}_{measurement_id}.csv"),
     script:
         join(SRC_DIR, "predict_by_measurement.py")
 
-
 # Train a model per-subject by passing all subject measurements and labels to the training script.
 rule train_by_subject:
     input:
-        features=dataset_and_subject_to_feature_files,
+        features=get_subject_feature_files,
         labels=join(RAW_TRAIN_DIR, "labels.csv"),
     output:
-        join(MODELS_DIR, "{cohort}_{subject_id}.model")
+        model=join(MODELS_DIR, "{cohort}_{device}_{instrument}_{subject_id}.{label}.model"),
+        model_info=join(MODELS_DIR, "{cohort}_{device}_{instrument}_{subject_id}.{label}.model_info.json"),
+        cv_results=join(MODELS_DIR, "{cohort}_{device}_{instrument}_{subject_id}.{label}.cv_results.csv")
     script:
         join(SRC_DIR, "train_by_subject.py")

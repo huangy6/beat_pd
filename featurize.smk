@@ -31,7 +31,7 @@ rule featurize_all:
 
 
 # Combine extracted measurement feature files into dataset-level features files.
-rule combine_features:
+rule combine_features_by_split:
     input:
         get_all_feature_files
     output:
