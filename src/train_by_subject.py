@@ -21,19 +21,7 @@ def train_by_subject(labels_df, features_df, cohort, device, instrument, subject
     labels_df["subject_id"] = labels_df["subject_id"].astype(str)
     subj_means = labels_df.groupby('subject_id').mean()
 
-    # These features don't compute for a number of observations
-    drop_cols = ['rms__friedrich_coefficients__m_3__r_30__coeff_0',
-        'rms__friedrich_coefficients__m_3__r_30__coeff_1',
-        'rms__friedrich_coefficients__m_3__r_30__coeff_2',
-        'rms__friedrich_coefficients__m_3__r_30__coeff_3',
-        'rms__max_langevin_fixed_point__m_3__r_30']
-    # These fft features are null for our size of windows
-    null_fft_cols = ['rms__fft_coefficient__coeff_%d__attr_"%s"' % (n, s) 
-                        for n, s in product(range(51, 100), ['abs', 'angle', 'imag', 'real'])]
-    # Sample entropy can take inf which screws with models
-    inf_cols = ['rms__sample_entropy']
-
-    df = features_df.drop(columns=[*drop_cols, *null_fft_cols, *inf_cols]).dropna().merge(labels_df, right_on='measurement_id', left_on='measurement_id')
+    df = features_df.dropna().merge(labels_df, right_on='measurement_id', left_on='measurement_id')
     print('%d rows dropped due to nans in features' % (features_df.shape[0] - df.shape[0]))
 
     # Model

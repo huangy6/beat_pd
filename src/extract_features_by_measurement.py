@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import tsfresh as tsf
+from itertools import product
 
 from constants import *
 
@@ -73,6 +74,22 @@ def extract_features_by_measurement(measurement_df, cohort, device, instrument, 
 
     # Append the measurement ID.
     tsf_df['measurement_id'] = measurement_id
+
+    # Drop un-used feature columns.
+
+    # These features don't compute for a number of observations.
+    drop_cols = ['rms__friedrich_coefficients__m_3__r_30__coeff_0',
+        'rms__friedrich_coefficients__m_3__r_30__coeff_1',
+        'rms__friedrich_coefficients__m_3__r_30__coeff_2',
+        'rms__friedrich_coefficients__m_3__r_30__coeff_3',
+        'rms__max_langevin_fixed_point__m_3__r_30']
+    # These fft features are null for our size of windows.
+    null_fft_cols = ['rms__fft_coefficient__coeff_%d__attr_"%s"' % (n, s) 
+                        for n, s in product(range(51, 100), ['abs', 'angle', 'imag', 'real'])]
+    # Sample entropy can take inf which screws with models.
+    inf_cols = ['rms__sample_entropy']
+
+    tsf_df = tsf_df.drop(columns=[*drop_cols, *null_fft_cols, *inf_cols])
 
     return tsf_df
 

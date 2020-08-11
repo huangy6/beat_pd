@@ -7,12 +7,6 @@ include: 'constants.smk'
 # Required output files
 # Reference: https://www.synapse.org/#!Synapse:syn22152015/wiki/604455
 
-# {teamname}_features.csv
-# Please include all data for both cohorts, and training/test, in one file if possible
-
-# File format: CSV
-# columns: measurement_id, metadata_start, metadata_stop, feature[FEATURENAME1], feature[FEATURENAME2],...
-
 # Helper functions
 def get_all_feature_files(w):
     # Get the list of measurement files from the manifest.csv at the checkpoint.
