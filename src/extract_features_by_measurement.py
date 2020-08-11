@@ -62,7 +62,7 @@ def extract_features_by_measurement(measurement_df, cohort, device, instrument, 
     window_size = F_HYPERPARAM_VALS[F_HYPERPARAMS.WINDOW_SIZE.value]
     
 
-    window_starts = [pd.Timedelta(seconds=t) for t in [*range(0, rms.index.get_level_values(MEASUREMENT_COLUMNS.TIMESTAMP.value).max().seconds - window_size, window_offset)]]
+    window_starts = [pd.Timedelta(seconds=t) for t in [*range(0, rms.index.get_level_values('t').max().seconds - window_size, window_offset)]]
     samples = sample_seq(rms, starts=window_starts, samp_len=pd.Timedelta(seconds=window_size), reset_time=True)
     for i, df in enumerate(samples):
         df['ord'] = str(i)
