@@ -142,7 +142,8 @@ To learn more about Snakemake please visit the documentation and tutorials [here
 
 ## Pipeline overview
 
-_The following sections are outdated, written prior to implementing the Snakemake-based pipeline. In the near future we will be updating the sections below to reflect the new pipeline infrastructure._
+_The following section is outdated, written prior to implementing the Snakemake-based pipeline. In the near future we will be updating the sections below to reflect the new pipeline infrastructure._
+
 
 * Extract tsfresh features from windowed observations 
   * Computed feature representations are saved to `extracted_features/`
@@ -157,6 +158,10 @@ The first three steps can be resource intensive. Cached results from the hyperpa
 
 
 ## Pipeline in detail
+
+_The following section is outdated, written prior to implementing the Snakemake-based pipeline. In the near future we will be updating the sections below to reflect the new pipeline infrastructure._
+
+
 The test set predictions can be regenerated using our pre-trained models following the directions in the [last section](#predict-test-data) below and downloading the extracted feature representations from [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0).
 
 ### Preconditions
