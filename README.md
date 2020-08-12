@@ -138,6 +138,20 @@ snakemake \
 Note: these instructions are for SLURM.
 If using a different job submission manager, update the `cluster-profile.yml` file.
 
+## Adapting the pipeline for another team
+
+To adapt this pipline code for another team's method, at a minimum, the functions in the following files will need to be updated:
+- `extract_annotations.py` [template](./src/extract_annotations.template.py)
+- `extract_features_by_measurement.py` [template](./src/extract_features_by_measurement.template.py)
+- `train_by_subject.py` [template](./src/train_by_subject.template.py)
+- `predict_by_measurement.py` [template](./src/predict_by_measurement.template.py)
+
+Each of the above files runs a single function to produce output file(s) from its input files & wildcard values.
+For teams whose methods include a per-subject training step, the pipeline structure (`.smk` file contents) should require little to no modification.
+
+Please reference the comments in the template files (`.template.py`) and in the Snakefiles (`.smk`) for more information about each step of the pipeline.
+To learn more about Snakemake please visit the documentation and tutorials [here](https://snakemake.readthedocs.io/en/stable/index.html).
+
 ## Pipeline in detail
 The test set predictions can be regenerated using our pre-trained models following the directions in the [last section](#predict-test-data) below and downloading the extracted feature representations from [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0).
 
