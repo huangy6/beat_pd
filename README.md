@@ -6,19 +6,6 @@ Yidi Huang, Mark Keller, Mohammed Saqib
 This repository contains our code for the community phase of the BEAT-PD challenge. 
 The [*final_sub*](https://github.com/huangy6/beat_pd/tree/final_sub/) branch of this repository contains our submission for the competition phase of the BEAT-PD challenge. 
 
-## Pipeline overview
-
-* Extract tsfresh features from windowed observations 
-  * Computed feature representations are saved to `extracted_features/`
-* Randomized hyperparameter search with CV
-  * Scores from hyperparameter search are saved to `performance/`
-* Re-fit with winning hyperparameters 
-  * Fitted models are saved to `models/`
-* Predict test data
-  * Final test set predictions are saved to `test_predictions/`
-
-The first three steps can be resource intensive. Cached results from the hyperparameter search and model fitting are available in this repository, and extracted feature representations are available for download [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0). 
-
 ## Setup
 
 Create and activate the [conda](https://docs.conda.io/en/latest/) environment.
@@ -151,6 +138,23 @@ For teams whose methods include a per-subject training step, the pipeline struct
 
 Please reference the comments in the template files (`.template.py`) and in the Snakefiles (`.smk`) for more information about each step of the pipeline.
 To learn more about Snakemake please visit the documentation and tutorials [here](https://snakemake.readthedocs.io/en/stable/index.html).
+
+
+## Pipeline overview
+
+_The following sections are outdated, written prior to implementing the Snakemake-based pipeline. In the near future we will be updating the sections below to reflect the new pipeline infrastructure._
+
+* Extract tsfresh features from windowed observations 
+  * Computed feature representations are saved to `extracted_features/`
+* Randomized hyperparameter search with CV
+  * Scores from hyperparameter search are saved to `performance/`
+* Re-fit with winning hyperparameters 
+  * Fitted models are saved to `models/`
+* Predict test data
+  * Final test set predictions are saved to `test_predictions/`
+
+The first three steps can be resource intensive. Cached results from the hyperparameter search and model fitting are available in this repository, and extracted feature representations are available for download [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0). 
+
 
 ## Pipeline in detail
 The test set predictions can be regenerated using our pre-trained models following the directions in the [last section](#predict-test-data) below and downloading the extracted feature representations from [here](https://www.dropbox.com/sh/slpl7qe7n3t253a/AACwxKIjZsQlKzDrFyPDPvTsa?dl=0).
