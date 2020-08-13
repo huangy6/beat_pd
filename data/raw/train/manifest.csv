@@ -2587,7 +2587,6 @@
 2585,realpd,smartwatch,accelerometer,realpd_smartwatch_accelerometer_hbv012_8fffc566-e0dc-4b42-9df6-711bc4236666.csv,8fffc566-e0dc-4b42-9df6-711bc4236666,hbv012
 2586,realpd,smartwatch,accelerometer,realpd_smartwatch_accelerometer_hbv014_3520cf42-1958-479f-bdd4-6de926f5c533.csv,3520cf42-1958-479f-bdd4-6de926f5c533,hbv014
 2587,realpd,smartwatch,accelerometer,realpd_smartwatch_accelerometer_hbv051_a3476076-065d-4fb8-89af-320f553a2399.csv,a3476076-065d-4fb8-89af-320f553a2399,hbv051
-2588,realpd,smartwatch,accelerometer,realpd_smartwatch_accelerometer_hbv017_61741f87-aea6-40b8-b28a-850e856e7b8d.csv,61741f87-aea6-40b8-b28a-850e856e7b8d,hbv017
 2589,realpd,smartwatch,accelerometer,realpd_smartwatch_accelerometer_hbv014_04bf1192-1179-4957-aa0a-34cbe7ff688a.csv,04bf1192-1179-4957-aa0a-34cbe7ff688a,hbv014
 2590,realpd,smartwatch,accelerometer,realpd_smartwatch_accelerometer_hbv017_24768c72-704a-4f92-ae1f-710731242291.csv,24768c72-704a-4f92-ae1f-710731242291,hbv017
 2591,realpd,smartwatch,accelerometer,realpd_smartwatch_accelerometer_hbv013_b402dd09-8b6c-43ad-b316-4660bacdf68f.csv,b402dd09-8b6c-43ad-b316-4660bacdf68f,hbv013
@@ -3122,7 +3121,6 @@
 3120,realpd,smartwatch,gyroscope,realpd_smartwatch_gyroscope_hbv012_8fffc566-e0dc-4b42-9df6-711bc4236666.csv,8fffc566-e0dc-4b42-9df6-711bc4236666,hbv012
 3121,realpd,smartwatch,gyroscope,realpd_smartwatch_gyroscope_hbv014_3520cf42-1958-479f-bdd4-6de926f5c533.csv,3520cf42-1958-479f-bdd4-6de926f5c533,hbv014
 3122,realpd,smartwatch,gyroscope,realpd_smartwatch_gyroscope_hbv051_a3476076-065d-4fb8-89af-320f553a2399.csv,a3476076-065d-4fb8-89af-320f553a2399,hbv051
-3123,realpd,smartwatch,gyroscope,realpd_smartwatch_gyroscope_hbv017_61741f87-aea6-40b8-b28a-850e856e7b8d.csv,61741f87-aea6-40b8-b28a-850e856e7b8d,hbv017
 3124,realpd,smartwatch,gyroscope,realpd_smartwatch_gyroscope_hbv014_04bf1192-1179-4957-aa0a-34cbe7ff688a.csv,04bf1192-1179-4957-aa0a-34cbe7ff688a,hbv014
 3125,realpd,smartwatch,gyroscope,realpd_smartwatch_gyroscope_hbv017_24768c72-704a-4f92-ae1f-710731242291.csv,24768c72-704a-4f92-ae1f-710731242291,hbv017
 3126,realpd,smartwatch,gyroscope,realpd_smartwatch_gyroscope_hbv013_b402dd09-8b6c-43ad-b316-4660bacdf68f.csv,b402dd09-8b6c-43ad-b316-4660bacdf68f,hbv013
